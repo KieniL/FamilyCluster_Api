@@ -1,0 +1,222 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Auth Service
+servers:
+- url: https://backend.kieni.at/
+- url: http://backend.kieni.at/
+- url: http://test-backend.kieni.at/
+paths:
+  /app:
+    post:
+      tags:
+      - "app"
+      summary: "add an application"
+      description: ""
+      operationId: "addApplication"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Application'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        403:
+          description: Forbidden
+        400:
+          description: Bad Request
+    put:
+      tags:
+      - "app"
+      summary: "update an application"
+      description: ""
+      operationId: "updateApplication"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplication'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Application'
+        403:
+          description: Forbidden
+        400:
+          description: Bad Request
+    get:
+      tags:
+      - "app"
+      summary: "get all applications"
+      description: ""
+      operationId: "getApplications"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationListResponse'
+  /appOfUser/{username}:
+    parameters:
+      - $ref: '#/components/parameters/username'
+    get:
+      summary: Get Apps of User
+      operationId: getAppOfUser
+      tags:
+      - "app"
+      responses:
+        200:
+          description: App
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/ApplicationListWithoutJwt'
+  /app/{appname}:
+    parameters:
+      - $ref: '#/components/parameters/appname'
+    get:
+      summary: Get an App
+      operationId: getApp
+      tags:
+      - "app"
+      responses:
+        200:
+          description: App
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/ApplicationWithoutJwt'
+  /app/{appname}/{username}:
+    parameters:
+      - $ref: '#/components/parameters/appname'
+      - $ref: '#/components/parameters/username'
+    get:
+      summary: Verify if user is allowed for app
+      operationId: verifyUserForApp
+      tags:
+      - "app"
+      responses:
+        200:
+          description: App
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Verified'
+    post:
+      summary: Add User to App
+      operationId: addUser2App
+      tags:
+      - "app"
+      responses:
+        200:
+          description: App
+          content:
+            application/json:
+                schema:
+                  $ref: '#/components/schemas/Updated'
+components:
+  parameters:
+    appname:
+      name: appname
+      in: path
+      required: true
+      description: the name the app
+      schema:
+        type: string
+    username:
+      name: username
+      in: path
+      required: true
+      description: the name of the user
+      schema:
+        type: string
+  schemas:
+    Verified:
+      required:
+        - verificationMessage
+      properties:
+        verificationMessage:
+          type: string
+    ApplicationListWithoutJwt:
+       type: array
+       items:
+        $ref: '#/components/schemas/ApplicationWithoutJwt'
+    ApplicationWithoutJwt:
+      required:
+        - appname
+        - url
+      properties:
+        appname:
+          type: string
+        url:
+          type: string
+        cssClasses:
+          type: string
+        allowedUsers:
+          type: array
+          items:
+            type: string  
+    UpdateApplication:
+      required:
+        - appname
+        - jwt
+      properties:
+        jwt:
+          type: string
+        appname:
+          type: string
+        cssClasses:
+          type: string
+        allowedUsers:
+          type: array
+          items:
+            type: string
+    ApplicationListResponse:
+       type: array
+       items:
+        $ref: '#/components/schemas/ApplicationResponse'
+    ApplicationResponse:
+      properties:
+        id:
+          type: string
+        appname:
+          type: string
+        cssClasses:
+          type: string
+    Updated:
+      required:
+        - updated
+      properties:
+        updated:
+          type: boolean
+    Application:
+      required:
+        - appname
+        - url
+        - jwt
+      properties:
+        jwt:
+          type: string
+        appname:
+          type: string
+        url:
+          type: string
+        cssClasses:
+          type: string
+        allowedUsers:
+          type: array
+          items:
+            type: string
+          
+          

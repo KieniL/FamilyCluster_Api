@@ -1,0 +1,95 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: CertService
+servers:
+  - url: https://backend.kieni.at/
+  - url: http://backend.kieni.at/
+  - url: http://test-backend.kieni.at/
+paths:
+  /cert:
+    post:
+      tags:
+        - "cert"
+      summary: "add an Certification"
+      description: ""
+      operationId: "addCertifaction"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Certification"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certification"
+        400:
+          description: Bad Request
+    get:
+      tags:
+        - "cert"
+      summary: "get Certifications"
+      description: ""
+      operationId: "getCertifications"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CertificationListResponse"
+  /cert/{shortname}:
+    parameters:
+      - $ref: "#/components/parameters/shortname"
+    get:
+      tags:
+        - "cert"
+      summary: "get Certification"
+      description: ""
+      operationId: "getCertification"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certification"
+components:
+  parameters:
+    shortname:
+      name: shortname
+      in: path
+      required: true
+      description: the shortname of the certification
+      schema:
+        type: string
+  schemas:
+    CertificationListResponse:
+      type: array
+      items:
+        $ref: "#/components/schemas/Certification"
+    Certification:
+      required:
+        - shortname
+        - description
+        - dateFrom
+        - dateTo
+      properties:
+        shortname:
+          type: string
+        description:
+          type: string
+        dateFrom:
+          type: string
+          format: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2019-05-17"
+        dateTo:
+          type: string
+          format: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2019-05-17"

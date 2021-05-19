@@ -1,0 +1,293 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Auth Service
+servers:
+- url: https://backend.kieni.at/
+- url: http://backend.kieni.at/
+- url: http://test-backend.kieni.at/
+paths:
+  /auth:
+    patch:
+      tags:
+      - "auth"
+      summary: "Register a customer"
+      description: ""
+      operationId: "register"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        403:
+          description: Forbidden
+    post:
+      tags:
+      - "auth"
+      summary: "Authenticate a customer"
+      description: ""
+      operationId: "authenticate"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Authentication'
+        403:
+          description: Forbidden
+    put:
+      tags:
+      - "auth"
+      summary: "Verifiy the jwt"
+      description: ""
+      operationId: "verifyToken"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerifiyResponse'
+        403:
+          description: Forbidden
+    get:
+      tags:
+      - "auth"
+      summary: "Get all users"
+      description: ""
+      operationId: "getUsers"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserList'
+        403:
+          description: Forbidden
+  /auth/{username}:
+    parameters:
+      - $ref: '#/components/parameters/username'
+    post:
+      tags:
+      - "auth"
+      summary: "Reset the Counter for MFA"
+      description: ""
+      operationId: "resetMfa"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resetted'
+        403:
+          description: Forbidden
+    put:
+      tags:
+      - "auth"
+      summary: "Change the User Password"
+      description: ""
+      operationId: "changePassword"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Password'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Changed'
+        403:
+          description: Forbidden
+  /mfa/setup:
+    post:
+      tags:
+      - "mfa"
+      summary: "setup mfa and receive the qrcode"
+      description: ""
+      operationId: "mfaSetup"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QRCode'
+        403:
+          description: Forbidden
+  /mfa/verify:
+    post:
+      tags:
+      - "mfa"
+      summary: "verify mfa"
+      description: ""
+      operationId: "mfaVerify"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MFATokenVerification'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Verified'
+        403:
+          description: Forbidden
+components:
+  parameters:
+    username:
+      name: username
+      in: path
+      required: true
+      description: the name of the user
+      schema:
+        type: string
+  schemas:
+    UserList:
+      type: array
+      items:
+        $ref: '#/components/schemas/User'
+    User:
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+    Password:
+      required:
+        - password
+        - jwt
+      properties:
+        password:
+          type: string
+        jwt:
+          type: string
+    Changed:
+      required:
+        - resetted
+      properties:
+        changed:
+          type: boolean   
+    Resetted:
+      required:
+        - resetted
+      properties:
+        resetted:
+          type: boolean
+    TokenVerifiyResponse:
+      required:
+        - mfa_needed
+        - mfa_action
+      properties:
+        mfaNeeded:
+          type: boolean
+        mfaAction:
+          type: string
+          enum: [setup, verifiy]
+    Authentication:
+     required:
+        - token
+     properties:
+      token:
+          type: string
+      allowedApplicationList:
+        type: array
+        items:
+          $ref: '#/components/schemas/AllowedApplication'
+    AllowedApplication:
+      properties:
+        id:
+          type: string
+        appname:
+          type: string
+        url:
+          type: string
+        cssClasses:
+          type: string
+    MFATokenVerification:
+      required:
+        - mfaToken
+        - jwtToken
+      properties:
+        mfaToken:
+          type: string
+        jwtToken:
+          type: string
+        username:
+          type: string
+    Verified:
+      required:
+        - verificationMessage
+      properties:
+        verificationMessage:
+          type: string
+    Token:
+      required:
+        - token
+        - username
+      properties:
+        token:
+          type: string
+        username:
+          type: string
+    QRCode:
+      required:
+      - QRCode
+      properties:
+        qrcode:
+          type: string
+    Login:
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 40
+        password:
+          type: string
+          minLength: 1
+          maxLength: 40

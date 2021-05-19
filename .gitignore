@@ -1,0 +1,7 @@
+target
+.project
+.classpath
+.settings/
+.openapi-generator
+openapi/.attach*
+.attach*

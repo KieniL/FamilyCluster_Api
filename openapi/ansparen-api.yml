@@ -1,0 +1,113 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: AnsparService
+servers:
+- url: https://backend.kieni.at/
+- url: http://backend.kieni.at/
+- url: http://test-backend.kieni.at/
+paths:
+  /ansparen:
+    post:
+      tags:
+      - "ansparen"
+      summary: "add an entry"
+      description: ""
+      operationId: "addEntry"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnsparEntry'
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnsparEntry'
+        400:
+          description: Bad Request
+    get:
+      tags:
+      - "ansparen"
+      summary: "get Categories"
+      description: ""
+      operationId: "getCategories"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+  /ansparen/{description}:
+    parameters:
+      - $ref: '#/components/parameters/description'
+    get:
+      tags:
+      - "ansparen"
+      summary: "get Category"
+      description: ""
+      operationId: "getCategory"
+      responses:
+        200:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+components:
+  parameters:
+    description:
+      name: description
+      in: path
+      required: true
+      description: the description of a category
+      schema:
+        type: string
+  schemas:
+    AnsparEntry:
+      required:
+        - date
+        - description
+        - value
+      properties:
+        date:
+          type: string
+          format: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2019-05-17"
+        description:
+          type: string
+        value:
+          type: number
+    CategoryListResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CategoryResponse'    
+    CategoryResponse:
+      required:
+        - description
+        - entries
+      properties:
+        description:
+          type: string
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/AmountEntry'   
+    AmountEntry:
+      required:
+        - date
+        - amount
+      properties:
+        date:
+          type: string
+          format: date
+          pattern: /([0-9]{4})-(?:[0-9]{2})-([0-9]{2})/
+          example: "2019-05-17"
+        amount:
+          type: number   
+                   
