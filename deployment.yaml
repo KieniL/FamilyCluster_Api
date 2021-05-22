@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apiservice
+  namespace: family
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app:  apiservice
+  template:
+    metadata:
+      labels:
+        app:  apiservice
+    spec:
+      initContainers:
+      - name: wait-for-authservice
+        image: stefanevinance/wait-for-200
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: TIMEOUT
+            value: '5'
+          - name: URL
+            value: http://authservice.family:8080/swagger-ui.html
+      - name: wait-for-ansparservice
+        image: stefanevinance/wait-for-200
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: TIMEOUT
+            value: '5'
+          - name: URL
+            value: http://ansparservice.family:8080/swagger-ui.html
+      - name: wait-for-certservice
+        image: stefanevinance/wait-for-200
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: TIMEOUT
+            value: '5'
+          - name: URL
+            value: http://certservice.family:8080/swagger-ui.html
+      containers:
+      - name:  apiservice
+        image: luke19/familyapiservice:<VERSION>
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 1000m
+          requests:
+            memory: 256Mi
+            cpu: 150m
+        env:
+        - name: AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: family-config
+              key: AUTH_URL
+        - name: ANSPAR_URL
+          valueFrom:
+            configMapKeyRef:
+              name: family-config
+              key: ANSPAR_URL
+        - name: CERT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: family-config
+              key: CERT_URL
+        ports:
+        - containerPort: 8080 #Expose containerport to the pod
+        livenessProbe: #Check that pod is ready
+          httpGet:
+            path: / #path to check
+            port: 8080
+          initialDelaySeconds: 10 #start checking after 30 seconds
+          periodSeconds: 10 #check every 30 seconds
+          failureThreshold: 10
+        readinessProbe: #Check that pod is healthy
+          httpGet:
+            path: / #path to check
+            port: 8080 #port to check
+          initialDelaySeconds: 15 #start checking after 15 seconds
+          periodSeconds: 10 #check every 3 seconds
+          failureThreshold: 10

@@ -5,3 +5,5 @@ target
 .openapi-generator
 openapi/.attach*
 .attach*
+.vscode/
+spotbugs.xml
