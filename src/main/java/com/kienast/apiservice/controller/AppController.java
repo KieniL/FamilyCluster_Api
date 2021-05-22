@@ -4,6 +4,16 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.kienast.apiservice.exception.NotAuthorizedException;
+import com.kienast.apiservice.rest.api.AppApi;
+import com.kienast.apiservice.rest.api.AppOfUserApi;
+import com.kienast.apiservice.rest.api.model.ApplicationModel;
+import com.kienast.apiservice.rest.api.model.ApplicationResponseModel;
+import com.kienast.apiservice.rest.api.model.ApplicationWithoutJwtModel;
+import com.kienast.apiservice.rest.api.model.UpdateApplicationModel;
+import com.kienast.apiservice.rest.api.model.UpdatedModel;
+import com.kienast.apiservice.rest.api.model.VerifiedModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -13,17 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import com.kienast.apiservice.exception.NotAuthorizedException;
-import com.kienast.apiservice.rest.api.AppApi;
-import com.kienast.apiservice.rest.api.AppOfUserApi;
-import com.kienast.apiservice.rest.api.model.ApplicationModel;
-import com.kienast.apiservice.rest.api.model.ApplicationResponseModel;
-import com.kienast.apiservice.rest.api.model.ApplicationWithoutJwtModel;
-import com.kienast.apiservice.rest.api.model.UpdateApplicationModel;
-import com.kienast.apiservice.rest.api.model.UpdatedModel;
-import com.kienast.apiservice.rest.api.model.UserModel;
-import com.kienast.apiservice.rest.api.model.VerifiedModel;
 
 import io.swagger.v3.oas.annotations.Operation;
 import reactor.core.publisher.Mono;
