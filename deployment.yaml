@@ -13,31 +13,6 @@ spec:
       labels:
         app:  apiservice
     spec:
-      initContainers:
-      - name: wait-for-authservice
-        image: stefanevinance/wait-for-200
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: TIMEOUT
-            value: '5'
-          - name: URL
-            value: http://authservice.family:8080/swagger-ui.html
-      - name: wait-for-ansparservice
-        image: stefanevinance/wait-for-200
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: TIMEOUT
-            value: '5'
-          - name: URL
-            value: http://ansparservice.family:8080/swagger-ui.html
-      - name: wait-for-certservice
-        image: stefanevinance/wait-for-200
-        imagePullPolicy: IfNotPresent
-        env:
-          - name: TIMEOUT
-            value: '5'
-          - name: URL
-            value: http://certservice.family:8080/swagger-ui.html
       containers:
       - name:  apiservice
         image: luke19/familyapiservice:<VERSION>
