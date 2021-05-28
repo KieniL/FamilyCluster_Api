@@ -6,3 +6,7 @@ spring:
 authURL: ${AUTH_URL:test1234}
 ansparURL: ${ANSPAR_URL:test1234}
 certURL: ${CERT_URL:test1234}
+management:
+  health:
+    probes:
+      enabled: true
