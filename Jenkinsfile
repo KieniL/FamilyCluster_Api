@@ -96,7 +96,7 @@ pipeline {
           }
         }
 
-                stage ('Kube-score Stage') {
+        stage ('Kube-score Stage') {
           steps {
             script{
               try{
