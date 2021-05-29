@@ -4,7 +4,6 @@ metadata:
   name: apiservice
   namespace: family
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app:  apiservice
@@ -13,10 +12,26 @@ spec:
       labels:
         app:  apiservice
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - apiservice
+              topologyKey: kubernetes.io/hostname
+            weight: 100
       containers:
       - name:  apiservice
         image: luke19/familyapiservice:<VERSION>
         imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsUser: 10000
+          runAsGroup: 10000
         resources:
           limits:
             memory: 512Mi
