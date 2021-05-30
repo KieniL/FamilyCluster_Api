@@ -7,6 +7,10 @@ package the project with this command before the container can be built
 
 mvn clean package
 
+Copy the api defined in the authservice and ansparservice into the apiservice to expose it externally.<br/>
+If you change something in the api there will be an error on imports.<br/>
+Change import in AnsparEntryModel, AmountEntryModel and CertificationModel to import java.time.LocalDate instead of threeten
+
 
 ## Tested with Jenkins
 
@@ -19,3 +23,5 @@ There are several things tested:
 * sonar scanning
 * mvn test + jacoco (unit Test coverage) --> jacoco plugin is needed
 * spotbugs (own maven plugin)
+* kube-score (find benchmarks for kubernetes files)
+* kube-val (validates kubernetes files)
