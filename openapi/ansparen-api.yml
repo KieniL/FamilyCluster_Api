@@ -3,9 +3,7 @@ info:
   version: 1.0.0
   title: AnsparService
 servers:
-- url: https://backend.kieni.at/
-- url: http://backend.kieni.at/
-- url: http://test-backend.kieni.at/
+- url: /api
 paths:
   /ansparen:
     post:

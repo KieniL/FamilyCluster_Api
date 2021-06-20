@@ -5,10 +5,6 @@
  */
 package com.kienast.apiservice.rest.api;
 
-import java.util.List;
-
-import javax.validation.Valid;
-
 import com.kienast.apiservice.rest.api.model.AuthenticationModel;
 import com.kienast.apiservice.rest.api.model.ChangedModel;
 import com.kienast.apiservice.rest.api.model.LoginModel;
@@ -17,19 +13,22 @@ import com.kienast.apiservice.rest.api.model.ResettedModel;
 import com.kienast.apiservice.rest.api.model.TokenModel;
 import com.kienast.apiservice.rest.api.model.TokenVerifiyResponseModel;
 import com.kienast.apiservice.rest.api.model.UserModel;
-
+import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import java.util.List;
+import java.util.Map;
 
 @Validated
 @Api(value = "auth", description = "the auth API")
