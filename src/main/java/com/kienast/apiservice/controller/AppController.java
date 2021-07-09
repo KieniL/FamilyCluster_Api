@@ -151,14 +151,19 @@ public class AppController implements AppApi, AppOfUserApi {
 	@Override
 	@Operation(description = "Add User to an app")
 	public ResponseEntity<UpdatedModel> addUser2App(String appname, String username) {
-		UpdatedModel response = null;
+		UpdatedModel updatedResponse = null;
 		
 		try {
-			response = webClientBuilder.build()
+			updatedResponse = webClientBuilder.build()
 					.post() //RequestMethod
 					.uri(authURL+"/app/" + appname + "/" + username)
 					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.retrieve() //run command
+					.onStatus(HttpStatus::is5xxServerError, response -> {
+						return Mono.error(new NotAuthorizedException(
+										String.format("Failed to updated user %s in app %s", username, appname)
+						));
+					})
 					.bodyToMono(UpdatedModel.class) //convert Response
 					.block(); //do as UpdatedModel call
 		}catch(Exception e) {
@@ -166,7 +171,7 @@ public class AppController implements AppApi, AppOfUserApi {
 		}
 		
 
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(updatedResponse);
 	}
 
 	@Override
