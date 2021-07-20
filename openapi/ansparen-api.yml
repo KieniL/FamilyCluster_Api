@@ -6,6 +6,23 @@ servers:
 - url: /api
 paths:
   /ansparen:
+    parameters:
+    - in: header
+      name: JWT
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: X-Request-ID
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: SOURCE_IP
+      schema:
+        type: string
+        format: ip
+      required: true
     post:
       tags:
       - "ansparen"
@@ -43,6 +60,22 @@ paths:
   /ansparen/{description}:
     parameters:
       - $ref: '#/components/parameters/description'
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     get:
       tags:
       - "ansparen"

@@ -12,3 +12,8 @@ management:
   health:
     probes:
       enabled: true
+logging:
+  level:
+    com:
+      kienast:
+        apiservice: ${API_LOG_LEVEL:DEBUG}

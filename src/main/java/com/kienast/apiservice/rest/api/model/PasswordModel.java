@@ -16,9 +16,6 @@ public class PasswordModel   {
   @JsonProperty("password")
   private String password;
 
-  @JsonProperty("jwt")
-  private String jwt;
-
   public PasswordModel password(String password) {
     this.password = password;
     return this;
@@ -40,27 +37,6 @@ public class PasswordModel   {
     this.password = password;
   }
 
-  public PasswordModel jwt(String jwt) {
-    this.jwt = jwt;
-    return this;
-  }
-
-  /**
-   * Get jwt
-   * @return jwt
-  */
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
-
-
-  public String getJwt() {
-    return jwt;
-  }
-
-  public void setJwt(String jwt) {
-    this.jwt = jwt;
-  }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -71,13 +47,12 @@ public class PasswordModel   {
       return false;
     }
     PasswordModel password = (PasswordModel) o;
-    return Objects.equals(this.password, password.password) &&
-        Objects.equals(this.jwt, password.jwt);
+    return Objects.equals(this.password, password.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(password, jwt);
+    return Objects.hash(password);
   }
 
   @Override
@@ -86,7 +61,6 @@ public class PasswordModel   {
     sb.append("class PasswordModel {\n");
     
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
-    sb.append("    jwt: ").append(toIndentedString(jwt)).append("\n");
     sb.append("}");
     return sb.toString();
   }

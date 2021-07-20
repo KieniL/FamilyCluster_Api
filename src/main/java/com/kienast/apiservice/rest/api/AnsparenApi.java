@@ -36,7 +36,7 @@ public interface AnsparenApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<AnsparEntryModel> addEntry(@ApiParam(value = "" ,required=true )  @Valid @RequestBody AnsparEntryModel ansparEntryModel);
+    ResponseEntity<AnsparEntryModel> addEntry(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody AnsparEntryModel ansparEntryModel);
 
 
     @ApiOperation(value = "get Categories", nickname = "getCategories", notes = "", response = CategoryResponseModel.class, responseContainer = "List", tags={ "ansparen", })
@@ -45,7 +45,7 @@ public interface AnsparenApi {
     @RequestMapping(value = "/ansparen",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<CategoryResponseModel>> getCategories();
+    ResponseEntity<List<CategoryResponseModel>> getCategories(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
 
 
     @ApiOperation(value = "get Category", nickname = "getCategory", notes = "", response = CategoryResponseModel.class, tags={ "ansparen", })
@@ -54,6 +54,6 @@ public interface AnsparenApi {
     @RequestMapping(value = "/ansparen/{description}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<CategoryResponseModel> getCategory(@ApiParam(value = "the description of a category",required=true) @PathVariable("description") String description);
+    ResponseEntity<CategoryResponseModel> getCategory(@ApiParam(value = "the description of a category",required=true) @PathVariable("description") String description,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
 
 }

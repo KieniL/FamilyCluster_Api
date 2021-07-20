@@ -35,7 +35,7 @@ public interface CertApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<CertificationModel> addCertifaction(@ApiParam(value = "" ,required=true )  @Valid @RequestBody CertificationModel certificationModel);
+    ResponseEntity<CertificationModel> addCertifaction(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody CertificationModel certificationModel);
 
 
     @ApiOperation(value = "get Certification", nickname = "getCertification", notes = "", response = CertificationModel.class, tags={ "cert", })
@@ -44,7 +44,7 @@ public interface CertApi {
     @RequestMapping(value = "/cert/{shortname}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<CertificationModel> getCertification(@ApiParam(value = "the shortname of the certification",required=true) @PathVariable("shortname") String shortname);
+    ResponseEntity<CertificationModel> getCertification(@ApiParam(value = "the shortname of the certification",required=true) @PathVariable("shortname") String shortname,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
 
 
     @ApiOperation(value = "get Certifications", nickname = "getCertifications", notes = "", response = CertificationModel.class, responseContainer = "List", tags={ "cert", })
@@ -53,6 +53,6 @@ public interface CertApi {
     @RequestMapping(value = "/cert",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<CertificationModel>> getCertifications();
+    ResponseEntity<List<CertificationModel>> getCertifications(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
 
 }
