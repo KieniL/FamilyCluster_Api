@@ -40,7 +40,7 @@ public interface AppApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<ApplicationModel> addApplication(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody ApplicationModel applicationModel);
+    ResponseEntity<ApplicationModel> addApplication(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody ApplicationModel applicationModel);
 
 
     @ApiOperation(value = "Add User to App", nickname = "addUser2App", notes = "", response = UpdatedModel.class, tags={ "app", })
@@ -49,7 +49,7 @@ public interface AppApi {
     @RequestMapping(value = "/app/{appname}/{username}",
         produces = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<UpdatedModel> addUser2App(@ApiParam(value = "the name the app",required=true) @PathVariable("appname") String appname,@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
+    ResponseEntity<UpdatedModel> addUser2App(@ApiParam(value = "the name the app",required=true) @PathVariable("appname") String appname,@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP);
 
 
     @ApiOperation(value = "Get an App", nickname = "getApp", notes = "", response = ApplicationModel.class, tags={ "app", })
@@ -58,7 +58,7 @@ public interface AppApi {
     @RequestMapping(value = "/app/{appname}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<ApplicationModel> getApp(@ApiParam(value = "the name the app",required=true) @PathVariable("appname") String appname,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
+    ResponseEntity<ApplicationModel> getApp(@ApiParam(value = "the name the app",required=true) @PathVariable("appname") String appname,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP);
 
 
     @ApiOperation(value = "get all applications", nickname = "getApplications", notes = "", response = ApplicationResponseModel.class, responseContainer = "List", tags={ "app", })
@@ -67,7 +67,7 @@ public interface AppApi {
     @RequestMapping(value = "/app",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<ApplicationResponseModel>> getApplications(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
+    ResponseEntity<List<ApplicationResponseModel>> getApplications(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP);
 
 
     @ApiOperation(value = "update an application", nickname = "updateApplication", notes = "", response = ApplicationModel.class, tags={ "app", })
@@ -79,7 +79,7 @@ public interface AppApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<ApplicationModel> updateApplication(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody UpdateApplicationModel updateApplicationModel);
+    ResponseEntity<ApplicationModel> updateApplication(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody UpdateApplicationModel updateApplicationModel);
 
 
     @ApiOperation(value = "Verify if user is allowed for app", nickname = "verifyUserForApp", notes = "", response = VerifiedModel.class, tags={ "app", })
@@ -88,6 +88,6 @@ public interface AppApi {
     @RequestMapping(value = "/app/{appname}/{username}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<VerifiedModel> verifyUserForApp(@ApiParam(value = "the name the app",required=true) @PathVariable("appname") String appname,@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
+    ResponseEntity<VerifiedModel> verifyUserForApp(@ApiParam(value = "the name the app",required=true) @PathVariable("appname") String appname,@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP);
 
 }

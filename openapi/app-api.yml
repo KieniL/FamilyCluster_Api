@@ -18,7 +18,7 @@ paths:
         type: string
       required: true
     - in: header
-      name: SOURCE_IP
+      name: X-Real-IP
       schema:
         type: string
         format: ip
@@ -96,7 +96,7 @@ paths:
           type: string
         required: true
       - in: header
-        name: SOURCE_IP
+        name: X-Real-IP
         schema:
           type: string
           format: ip
@@ -127,7 +127,7 @@ paths:
           type: string
         required: true
       - in: header
-        name: SOURCE_IP
+        name: X-Real-IP
         schema:
           type: string
           format: ip
@@ -159,7 +159,7 @@ paths:
           type: string
         required: true
       - in: header
-        name: SOURCE_IP
+        name: X-Real-IP
         schema:
           type: string
           format: ip

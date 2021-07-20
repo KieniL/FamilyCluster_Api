@@ -79,5 +79,5 @@ So the final one is:
 * mdc
   * SYSTEM_LOG_LEVEL
   * REQUEST_ID
-  * source ip
+  * X-Real-IP
   * User id

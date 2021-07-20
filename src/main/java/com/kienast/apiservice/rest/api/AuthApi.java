@@ -42,7 +42,7 @@ public interface AuthApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<AuthenticationModel> authenticate(@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody LoginModel loginModel);
+    ResponseEntity<AuthenticationModel> authenticate(@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody LoginModel loginModel);
 
 
     @ApiOperation(value = "Change the User Password", nickname = "changePassword", notes = "", response = ChangedModel.class, tags={ "auth", })
@@ -53,7 +53,7 @@ public interface AuthApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<ChangedModel> changePassword(@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody PasswordModel passwordModel);
+    ResponseEntity<ChangedModel> changePassword(@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody PasswordModel passwordModel);
 
 
     @ApiOperation(value = "Get all users", nickname = "getUsers", notes = "", response = UserModel.class, responseContainer = "List", tags={ "auth", })
@@ -63,7 +63,7 @@ public interface AuthApi {
     @RequestMapping(value = "/auth",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<UserModel>> getUsers(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
+    ResponseEntity<List<UserModel>> getUsers(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCX-Real-IPE_IP", required=true) String soURCXRealIPEIP);
 
 
     @ApiOperation(value = "Register a customer", nickname = "register", notes = "", response = JWTTokenModel.class, tags={ "auth", })
@@ -74,7 +74,7 @@ public interface AuthApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PATCH)
-    ResponseEntity<JWTTokenModel> register(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody LoginModel loginModel);
+    ResponseEntity<JWTTokenModel> register(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody LoginModel loginModel);
 
 
     @ApiOperation(value = "Reset the Counter for MFA", nickname = "resetMfa", notes = "", response = ResettedModel.class, tags={ "auth", })
@@ -85,7 +85,7 @@ public interface AuthApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<ResettedModel> resetMfa(@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody JWTTokenModel jwTTokenModel);
+    ResponseEntity<ResettedModel> resetMfa(@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody JWTTokenModel jwTTokenModel);
 
 
     @ApiOperation(value = "Verifiy the jwt", nickname = "verifyToken", notes = "", response = TokenVerifiyResponseModel.class, tags={ "auth", })
@@ -96,6 +96,6 @@ public interface AuthApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<TokenVerifiyResponseModel> verifyToken(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody JWTTokenModel jwTTokenModel);
+    ResponseEntity<TokenVerifiyResponseModel> verifyToken(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody JWTTokenModel jwTTokenModel);
 
 }

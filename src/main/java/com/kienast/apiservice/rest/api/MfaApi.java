@@ -38,7 +38,7 @@ public interface MfaApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<QRCodeModel> mfaSetup(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody JWTTokenModel jwTTokenModel);
+    ResponseEntity<QRCodeModel> mfaSetup(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody JWTTokenModel jwTTokenModel);
 
 
     @ApiOperation(value = "verify mfa", nickname = "mfaVerify", notes = "", response = VerifiedModel.class, tags={ "mfa", })
@@ -49,6 +49,6 @@ public interface MfaApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.POST)
-    ResponseEntity<VerifiedModel> mfaVerify(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody MFATokenVerificationModel mfATokenVerificationModel);
+    ResponseEntity<VerifiedModel> mfaVerify(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP,@ApiParam(value = "" ,required=true )  @Valid @RequestBody MFATokenVerificationModel mfATokenVerificationModel);
 
 }
