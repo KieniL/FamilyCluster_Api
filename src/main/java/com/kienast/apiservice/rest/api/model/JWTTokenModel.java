@@ -9,38 +9,17 @@ import javax.validation.Valid;
 import javax.validation.constraints.*;
 
 /**
- * MFATokenVerificationModel
+ * JWTTokenModel
  */
 
-public class MFATokenVerificationModel   {
-  @JsonProperty("mfaToken")
-  private String mfaToken;
-
+public class JWTTokenModel   {
   @JsonProperty("username")
   private String username;
 
-  public MFATokenVerificationModel mfaToken(String mfaToken) {
-    this.mfaToken = mfaToken;
-    return this;
-  }
+  @JsonProperty("jwt")
+  private String jwt;
 
-  /**
-   * Get mfaToken
-   * @return mfaToken
-  */
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
-
-
-  public String getMfaToken() {
-    return mfaToken;
-  }
-
-  public void setMfaToken(String mfaToken) {
-    this.mfaToken = mfaToken;
-  }
-
-  public MFATokenVerificationModel username(String username) {
+  public JWTTokenModel username(String username) {
     this.username = username;
     return this;
   }
@@ -49,7 +28,8 @@ public class MFATokenVerificationModel   {
    * Get username
    * @return username
   */
-  @ApiModelProperty(value = "")
+  @ApiModelProperty(required = true, value = "")
+  @NotNull
 
 
   public String getUsername() {
@@ -58,6 +38,26 @@ public class MFATokenVerificationModel   {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public JWTTokenModel jwt(String jwt) {
+    this.jwt = jwt;
+    return this;
+  }
+
+  /**
+   * Get jwt
+   * @return jwt
+  */
+  @ApiModelProperty(value = "")
+
+
+  public String getJwt() {
+    return jwt;
+  }
+
+  public void setJwt(String jwt) {
+    this.jwt = jwt;
   }
 
 
@@ -69,23 +69,23 @@ public class MFATokenVerificationModel   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    MFATokenVerificationModel mfATokenVerification = (MFATokenVerificationModel) o;
-    return Objects.equals(this.mfaToken, mfATokenVerification.mfaToken) &&
-        Objects.equals(this.username, mfATokenVerification.username);
+    JWTTokenModel jwTToken = (JWTTokenModel) o;
+    return Objects.equals(this.username, jwTToken.username) &&
+        Objects.equals(this.jwt, jwTToken.jwt);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(mfaToken, username);
+    return Objects.hash(username, jwt);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class MFATokenVerificationModel {\n");
+    sb.append("class JWTTokenModel {\n");
     
-    sb.append("    mfaToken: ").append(toIndentedString(mfaToken)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    jwt: ").append(toIndentedString(jwt)).append("\n");
     sb.append("}");
     return sb.toString();
   }

@@ -6,6 +6,23 @@ servers:
 - url: /api
 paths:
   /cert:
+    parameters:
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     post:
       tags:
         - "cert"
@@ -43,6 +60,22 @@ paths:
   /cert/{shortname}:
     parameters:
       - $ref: "#/components/parameters/shortname"
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     get:
       tags:
         - "cert"

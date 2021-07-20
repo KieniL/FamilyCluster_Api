@@ -5,7 +5,7 @@
  */
 package com.kienast.apiservice.rest.api;
 
-import com.kienast.apiservice.rest.api.model.ApplicationWithoutJwtModel;
+import com.kienast.apiservice.rest.api.model.ApplicationModel;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,12 +27,12 @@ import java.util.Map;
 @Api(value = "appOfUser", description = "the appOfUser API")
 public interface AppOfUserApi {
 
-    @ApiOperation(value = "Get Apps of User", nickname = "getAppOfUser", notes = "", response = ApplicationWithoutJwtModel.class, responseContainer = "List", tags={ "app", })
+    @ApiOperation(value = "Get Apps of User", nickname = "getAppOfUser", notes = "", response = ApplicationModel.class, responseContainer = "List", tags={ "app", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "App", response = ApplicationWithoutJwtModel.class, responseContainer = "List") })
+        @ApiResponse(code = 200, message = "App", response = ApplicationModel.class, responseContainer = "List") })
     @RequestMapping(value = "/appOfUser/{username}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<ApplicationWithoutJwtModel>> getAppOfUser(@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username);
+    ResponseEntity<List<ApplicationModel>> getAppOfUser(@ApiParam(value = "the name of the user",required=true) @PathVariable("username") String username,@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCE_IP", required=true) String SOURCE_IP);
 
 }

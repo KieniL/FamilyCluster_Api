@@ -6,6 +6,23 @@ servers:
 - url: /api
 paths:
   /app:
+    parameters:
+    - in: header
+      name: JWT
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: X-Request-ID
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: SOURCE_IP
+      schema:
+        type: string
+        format: ip
+      required: true
     post:
       tags:
       - "app"
@@ -68,6 +85,22 @@ paths:
   /appOfUser/{username}:
     parameters:
       - $ref: '#/components/parameters/username'
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     get:
       summary: Get Apps of User
       operationId: getAppOfUser
@@ -79,10 +112,26 @@ paths:
           content:
             application/json:
                 schema:
-                  $ref: '#/components/schemas/ApplicationListWithoutJwt'
+                  $ref: '#/components/schemas/ApplicationList'
   /app/{appname}:
     parameters:
       - $ref: '#/components/parameters/appname'
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     get:
       summary: Get an App
       operationId: getApp
@@ -94,11 +143,27 @@ paths:
           content:
             application/json:
                 schema:
-                  $ref: '#/components/schemas/ApplicationWithoutJwt'
+                  $ref: '#/components/schemas/Application'
   /app/{appname}/{username}:
     parameters:
       - $ref: '#/components/parameters/appname'
       - $ref: '#/components/parameters/username'
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     get:
       summary: Verify if user is allowed for app
       operationId: verifyUserForApp
@@ -146,32 +211,14 @@ components:
       properties:
         verificationMessage:
           type: string
-    ApplicationListWithoutJwt:
+    ApplicationList:
        type: array
        items:
-        $ref: '#/components/schemas/ApplicationWithoutJwt'
-    ApplicationWithoutJwt:
-      required:
-        - appname
-        - url
-      properties:
-        appname:
-          type: string
-        url:
-          type: string
-        cssClasses:
-          type: string
-        allowedUsers:
-          type: array
-          items:
-            type: string  
+        $ref: '#/components/schemas/Application'
     UpdateApplication:
       required:
         - appname
-        - jwt
       properties:
-        jwt:
-          type: string
         appname:
           type: string
         cssClasses:
@@ -202,10 +249,7 @@ components:
       required:
         - appname
         - url
-        - jwt
       properties:
-        jwt:
-          type: string
         appname:
           type: string
         url:

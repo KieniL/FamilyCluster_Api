@@ -15,9 +15,6 @@ import javax.validation.constraints.*;
  */
 
 public class UpdateApplicationModel   {
-  @JsonProperty("jwt")
-  private String jwt;
-
   @JsonProperty("appname")
   private String appname;
 
@@ -27,27 +24,6 @@ public class UpdateApplicationModel   {
   @JsonProperty("allowedUsers")
   @Valid
   private List<String> allowedUsers = null;
-
-  public UpdateApplicationModel jwt(String jwt) {
-    this.jwt = jwt;
-    return this;
-  }
-
-  /**
-   * Get jwt
-   * @return jwt
-  */
-  @ApiModelProperty(required = true, value = "")
-  @NotNull
-
-
-  public String getJwt() {
-    return jwt;
-  }
-
-  public void setJwt(String jwt) {
-    this.jwt = jwt;
-  }
 
   public UpdateApplicationModel appname(String appname) {
     this.appname = appname;
@@ -128,15 +104,14 @@ public class UpdateApplicationModel   {
       return false;
     }
     UpdateApplicationModel updateApplication = (UpdateApplicationModel) o;
-    return Objects.equals(this.jwt, updateApplication.jwt) &&
-        Objects.equals(this.appname, updateApplication.appname) &&
+    return Objects.equals(this.appname, updateApplication.appname) &&
         Objects.equals(this.cssClasses, updateApplication.cssClasses) &&
         Objects.equals(this.allowedUsers, updateApplication.allowedUsers);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(jwt, appname, cssClasses, allowedUsers);
+    return Objects.hash(appname, cssClasses, allowedUsers);
   }
 
   @Override
@@ -144,7 +119,6 @@ public class UpdateApplicationModel   {
     StringBuilder sb = new StringBuilder();
     sb.append("class UpdateApplicationModel {\n");
     
-    sb.append("    jwt: ").append(toIndentedString(jwt)).append("\n");
     sb.append("    appname: ").append(toIndentedString(appname)).append("\n");
     sb.append("    cssClasses: ").append(toIndentedString(cssClasses)).append("\n");
     sb.append("    allowedUsers: ").append(toIndentedString(allowedUsers)).append("\n");

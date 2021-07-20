@@ -10,6 +10,23 @@ paths:
       tags:
       - "auth"
       summary: "Register a customer"
+      parameters:
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
       description: ""
       operationId: "register"
       requestBody:
@@ -24,13 +41,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Token'
+                $ref: '#/components/schemas/JWTToken'
         403:
           description: Forbidden
     post:
       tags:
       - "auth"
       summary: "Authenticate a customer"
+      parameters:
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
       description: ""
       operationId: "authenticate"
       requestBody:
@@ -52,6 +81,23 @@ paths:
       tags:
       - "auth"
       summary: "Verifiy the jwt"
+      parameters:
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
       description: ""
       operationId: "verifyToken"
       requestBody:
@@ -59,7 +105,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Token'
+              $ref: '#/components/schemas/JWTToken'
       responses:
         200:
           description: Schemas
@@ -73,6 +119,23 @@ paths:
       tags:
       - "auth"
       summary: "Get all users"
+      parameters:
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
       description: ""
       operationId: "getUsers"
       responses:
@@ -87,6 +150,22 @@ paths:
   /auth/{username}:
     parameters:
       - $ref: '#/components/parameters/username'
+      - in: header
+        name: JWT
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: X-Request-ID
+        schema:
+          type: string
+        required: true
+      - in: header
+        name: SOURCE_IP
+        schema:
+          type: string
+          format: ip
+        required: true
     post:
       tags:
       - "auth"
@@ -98,7 +177,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Token'
+              $ref: '#/components/schemas/JWTToken'
       responses:
         200:
           description: Schemas
@@ -130,6 +209,23 @@ paths:
         403:
           description: Forbidden
   /mfa/setup:
+    parameters:
+    - in: header
+      name: JWT
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: X-Request-ID
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: SOURCE_IP
+      schema:
+        type: string
+        format: ip
+      required: true
     post:
       tags:
       - "mfa"
@@ -141,7 +237,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Token'
+              $ref: '#/components/schemas/JWTToken'
       responses:
         200:
           description: Schemas
@@ -152,6 +248,23 @@ paths:
         403:
           description: Forbidden
   /mfa/verify:
+    parameters:
+    - in: header
+      name: JWT
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: X-Request-ID
+      schema:
+        type: string
+      required: true
+    - in: header
+      name: SOURCE_IP
+      schema:
+        type: string
+        format: ip
+      required: true
     post:
       tags:
       - "mfa"
@@ -196,11 +309,8 @@ components:
     Password:
       required:
         - password
-        - jwt
       properties:
         password:
-          type: string
-        jwt:
           type: string
     Changed:
       required:
@@ -247,11 +357,8 @@ components:
     MFATokenVerification:
       required:
         - mfaToken
-        - jwtToken
       properties:
         mfaToken:
-          type: string
-        jwtToken:
           type: string
         username:
           type: string
@@ -261,14 +368,13 @@ components:
       properties:
         verificationMessage:
           type: string
-    Token:
+    JWTToken:
       required:
-        - token
         - username
       properties:
-        token:
-          type: string
         username:
+          type: string
+        jwt:
           type: string
     QRCode:
       required:
