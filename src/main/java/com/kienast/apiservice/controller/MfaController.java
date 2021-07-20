@@ -10,6 +10,8 @@ import com.kienast.apiservice.rest.api.model.MFATokenVerificationModel;
 import com.kienast.apiservice.rest.api.model.QRCodeModel;
 import com.kienast.apiservice.rest.api.model.VerifiedModel;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +38,8 @@ public class MfaController implements MfaApi {
 	@Value("${logging.level.com.kienast.apiservice}")
 	private String loglevel;
 
+	private static Logger logger = LogManager.getLogger(MfaController.class.getName());
+
 	@Override
 	@Operation(description = "setup MFA")
 	public ResponseEntity<QRCodeModel> mfaSetup(String JWT, String xRequestID, String SOURCE_IP,
@@ -43,8 +47,10 @@ public class MfaController implements MfaApi {
 		QRCodeModel qrResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (setup MFA)");
 
 		try {
+			logger.info("Call Auth Microservice");
 			qrResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/mfa/setup").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -54,15 +60,16 @@ public class MfaController implements MfaApi {
 					}).bodyToMono(QRCodeModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (qrResponse != null) {
+			logger.info("Setup was successfull");
 			return ResponseEntity.ok(qrResponse);
 		}
 
+		logger.debug("Setup was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -73,8 +80,10 @@ public class MfaController implements MfaApi {
 		VerifiedModel mfaVerificationResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (verify MFA)");
 
 		try {
+			logger.info("Call Auth Microservice");
 			mfaVerificationResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/mfa/verify").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -85,15 +94,16 @@ public class MfaController implements MfaApi {
 					}).bodyToMono(VerifiedModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (mfaVerificationResponse != null) {
+			logger.info("Verification was successfull");
 			return ResponseEntity.ok(mfaVerificationResponse);
 		}
 
+		logger.debug("Verification was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 

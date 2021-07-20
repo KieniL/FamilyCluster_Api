@@ -18,6 +18,8 @@ import com.kienast.apiservice.rest.api.model.ResettedModel;
 import com.kienast.apiservice.rest.api.model.TokenVerifiyResponseModel;
 import com.kienast.apiservice.rest.api.model.UserModel;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +46,8 @@ public class AuthController implements AuthApi {
 	@Value("${logging.level.com.kienast.apiservice}")
 	private String loglevel;
 
+	private static Logger logger = LogManager.getLogger(AuthController.class.getName());
+
 	@Override
 	@Operation(description = "Register a customer")
 	public ResponseEntity<JWTTokenModel> register(String JWT, String xRequestID, String SOURCE_IP,
@@ -51,8 +55,10 @@ public class AuthController implements AuthApi {
 		Token tokenResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (Register User)");
 
 		try {
+			logger.info("Call Authentication Microservice");
 			tokenResponse = webClientBuilder.build().patch() // RequestMethod
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(loginModel))
@@ -62,16 +68,17 @@ public class AuthController implements AuthApi {
 					}).bodyToMono(Token.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (tokenResponse != null) {
 			JWTTokenModel response = new TokenAdapter(tokenResponse, loginModel.getUsername()).createJson();
+			logger.info("Registration was successfull");
 			return ResponseEntity.ok(response);
 		}
 
+		logger.error("Registration was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -82,8 +89,10 @@ public class AuthController implements AuthApi {
 		TokenVerifiyResponseModel tokenVerifiyResponseModel = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (Verify JWT)");
 
 		try {
+			logger.info("Call Authentication Microservice");
 			tokenVerifiyResponseModel = webClientBuilder.build().put() // RequestMethod
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(tokenModel))
@@ -93,15 +102,16 @@ public class AuthController implements AuthApi {
 					}).bodyToMono(TokenVerifiyResponseModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (tokenVerifiyResponseModel != null) {
+			logger.info("Verification was successfull");
 			return ResponseEntity.ok(tokenVerifiyResponseModel);
 		}
 
+		logger.info("Verification was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -112,8 +122,10 @@ public class AuthController implements AuthApi {
 		AuthenticationModel authenticationModel = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (Authenticate User)");
 
 		try {
+			logger.info("Call Authentication Microservice");
 			authenticationModel = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(loginModel))
@@ -123,14 +135,16 @@ public class AuthController implements AuthApi {
 					}).bodyToMono(AuthenticationModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (authenticationModel != null) {
+			logger.info("Authentication was successfull");
 			return ResponseEntity.ok(authenticationModel);
 		}
+
+		logger.error("Authentication was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -141,8 +155,10 @@ public class AuthController implements AuthApi {
 		ResettedModel resettedResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (Reset MFA)");
 
 		try {
+			logger.info("Call Authentication Microservice");
 			resettedResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/auth/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -152,15 +168,16 @@ public class AuthController implements AuthApi {
 					}).bodyToMono(ResettedModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (resettedResponse != null) {
+			logger.info("Reset MFA was successfull");
 			return ResponseEntity.ok(resettedResponse);
 		}
 
+		logger.error("Reset MFA was not successfull");
 		return ResponseEntity.status(403).body(null);
 	}
 
@@ -171,8 +188,10 @@ public class AuthController implements AuthApi {
 		ChangedModel changedResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (Change Password)");
 
 		try {
+			logger.info("Call Authentication Microservice");
 			changedResponse = webClientBuilder.build().put() // RequestMethodUserModel
 					.uri(authURL + "/auth/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -182,15 +201,16 @@ public class AuthController implements AuthApi {
 					}).bodyToMono(ChangedModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 			throw e;
 		}
 
 		if (changedResponse != null) {
+			logger.info("Change Password was successfull");
 			return ResponseEntity.ok(changedResponse);
 		}
 
+		logger.error("Change Password was not successfull");
 		return ResponseEntity.status(403).body(null);
 	}
 
@@ -200,17 +220,19 @@ public class AuthController implements AuthApi {
 		List<UserModel> users = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
+		logger.info("Got Request (Get Users)");
 
 		try {
+			logger.info("Call Authentication Microservice");
 			users = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/auth/").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
 					.bodyToFlux(UserModel.class).collectList().block(); // convert Response
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
+			logger.error("Error occured: " + e.getMessage());
 		}
 
+		logger.info("Retrieval was successfull");
 		return ResponseEntity.ok(users);
 	}
 
