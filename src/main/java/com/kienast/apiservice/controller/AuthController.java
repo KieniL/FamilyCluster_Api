@@ -55,10 +55,10 @@ public class AuthController implements AuthApi {
 		Token tokenResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Register User)");
+		logger.info("API: Got Request (Register User)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			tokenResponse = webClientBuilder.build().patch() // RequestMethod
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(loginModel))
@@ -74,11 +74,11 @@ public class AuthController implements AuthApi {
 
 		if (tokenResponse != null) {
 			JWTTokenModel response = new TokenAdapter(tokenResponse, loginModel.getUsername()).createJson();
-			logger.info("Registration was successfull");
+			logger.info("API: Registration was successfull");
 			return ResponseEntity.ok(response);
 		}
 
-		logger.error("Registration was not successfull");
+		logger.error("API: Registration was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -89,10 +89,10 @@ public class AuthController implements AuthApi {
 		TokenVerifiyResponseModel tokenVerifiyResponseModel = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Verify JWT)");
+		logger.info("API: Got Request (Verify JWT)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			tokenVerifiyResponseModel = webClientBuilder.build().put() // RequestMethod
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(tokenModel))
@@ -107,11 +107,11 @@ public class AuthController implements AuthApi {
 		}
 
 		if (tokenVerifiyResponseModel != null) {
-			logger.info("Verification was successfull");
+			logger.info("API: Verification was successfull");
 			return ResponseEntity.ok(tokenVerifiyResponseModel);
 		}
 
-		logger.info("Verification was not successfull");
+		logger.info("API: Verification was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -122,10 +122,10 @@ public class AuthController implements AuthApi {
 		AuthenticationModel authenticationModel = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Authenticate User)");
+		logger.info("API: Got Request (Authenticate User)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			authenticationModel = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(loginModel))
@@ -140,25 +140,25 @@ public class AuthController implements AuthApi {
 		}
 
 		if (authenticationModel != null) {
-			logger.info("Authentication was successfull");
+			logger.info("API: Authentication was successfull");
 			return ResponseEntity.ok(authenticationModel);
 		}
 
-		logger.error("Authentication was not successfull");
+		logger.error("API: Authentication was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
 	@Override
 	@Operation(description = "Reset Mfa")
-	public ResponseEntity<ResettedModel> resetMfa(String JWT, String xRequestID, String SOURCE_IP, String username,
+	public ResponseEntity<ResettedModel> resetMfa(String username, String JWT, String xRequestID, String SOURCE_IP,
 			@Valid JWTTokenModel tokenModel) {
 		ResettedModel resettedResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Reset MFA)");
+		logger.info("API: Got Request (Reset MFA)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			resettedResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/auth/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -173,25 +173,25 @@ public class AuthController implements AuthApi {
 		}
 
 		if (resettedResponse != null) {
-			logger.info("Reset MFA was successfull");
+			logger.info("API: Reset MFA was successfull");
 			return ResponseEntity.ok(resettedResponse);
 		}
 
-		logger.error("Reset MFA was not successfull");
+		logger.error("API: Reset MFA was not successfull");
 		return ResponseEntity.status(403).body(null);
 	}
 
 	@Override
 	@Operation(description = "Change Password")
-	public ResponseEntity<ChangedModel> changePassword(String JWT, String xRequestID, String SOURCE_IP, String username,
+	public ResponseEntity<ChangedModel> changePassword(String username, String JWT, String xRequestID, String SOURCE_IP,
 			@Valid PasswordModel passwordModel) {
 		ChangedModel changedResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Change Password)");
+		logger.info("API: Got Request (Change Password)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			changedResponse = webClientBuilder.build().put() // RequestMethodUserModel
 					.uri(authURL + "/auth/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -206,11 +206,11 @@ public class AuthController implements AuthApi {
 		}
 
 		if (changedResponse != null) {
-			logger.info("Change Password was successfull");
+			logger.info("API: Change Password was successfull");
 			return ResponseEntity.ok(changedResponse);
 		}
 
-		logger.error("Change Password was not successfull");
+		logger.error("API: Change Password was not successfull");
 		return ResponseEntity.status(403).body(null);
 	}
 
@@ -220,10 +220,10 @@ public class AuthController implements AuthApi {
 		List<UserModel> users = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Get Users)");
+		logger.info("API: Got Request (Get Users)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			users = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/auth/").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
@@ -232,7 +232,7 @@ public class AuthController implements AuthApi {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was successfull");
+		logger.info("API: Retrieval was successfull");
 		return ResponseEntity.ok(users);
 	}
 

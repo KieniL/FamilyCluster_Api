@@ -47,10 +47,10 @@ public class AnsparController implements AnsparenApi {
 		AnsparEntryModel entryResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Add Entry)");
+		logger.info("API: Got Request (Add Entry)");
 
 		try {
-			logger.info("Call AnsparMicroservice");
+			logger.info("API: Call AnsparMicroservice");
 			entryResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(ansparURL + "/ansparen").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -65,11 +65,11 @@ public class AnsparController implements AnsparenApi {
 		}
 
 		if (entryResponse != null) {
-			logger.info("Adding was successfull");
+			logger.info("API: Adding was successfull");
 			return ResponseEntity.ok(entryResponse);
 		}
 
-		logger.debug("Adding was not successfull");
+		logger.debug("API: Adding was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -79,10 +79,10 @@ public class AnsparController implements AnsparenApi {
 		List<CategoryResponseModel> response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Get Entries)");
+		logger.info("API: Got Request (Get Entries)");
 
 		try {
-			logger.info("Call AnsparMicroservice");
+			logger.info("API: Call AnsparMicroservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(ansparURL + "/ansparen").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
@@ -91,21 +91,20 @@ public class AnsparController implements AnsparenApi {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was successfull");
+		logger.info("API: Retrieval was successfull");
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
 	@Operation(description = "get Entry by categoryName")
-	public ResponseEntity<CategoryResponseModel> getCategory(String JWT, String xRequestID, String SOURCE_IP,
-			String description) {
+	public ResponseEntity<CategoryResponseModel> getCategory(String description, String JWT, String xRequestID, String SOURCE_IP) {
 		CategoryResponseModel response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Get Entry) for category " + description );
+		logger.info("API: Got Request (Get Entry) for category " + description );
 
 		try {
-			logger.info("Call AnsparMicroservice");
+			logger.info("API: Call AnsparMicroservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(ansparURL + "/ansparen/" + description)
 					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
@@ -115,7 +114,7 @@ public class AnsparController implements AnsparenApi {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was successfull");
+		logger.info("API: Retrieval was successfull");
 		return ResponseEntity.ok(response);
 	}
 

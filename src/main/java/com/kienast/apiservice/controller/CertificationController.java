@@ -44,10 +44,10 @@ public class CertificationController implements CertApi {
 		CertificationModel entryResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Add Certification)");
+		logger.info("API: Got Request (Add Certification)");
 
 		try {
-			logger.info("Call Certification Microservice");
+			logger.info("API: Call Certification Microservice");
 			entryResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(certURL + "/cert").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -62,24 +62,24 @@ public class CertificationController implements CertApi {
 		}
 
 		if (entryResponse != null) {
-			logger.info("Adding was scuccessfull");
+			logger.info("API: Adding was scuccessfull");
 			return ResponseEntity.ok(entryResponse);
 		}
 
-		logger.info("Adding was not scuccessfull");
+		logger.info("API: Adding was not scuccessfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
 	@Override
-	public ResponseEntity<CertificationModel> getCertification(String JWT, String xRequestID, String SOURCE_IP,
-			String shortname) {
+	public ResponseEntity<CertificationModel> getCertification(String shortname, String JWT, String xRequestID,
+			String SOURCE_IP) {
 		CertificationModel response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (get Certification) for " + shortname);
+		logger.info("API: Got Request (get Certification) for " + shortname);
 
 		try {
-			logger.info("Call Certification Microservice");
+			logger.info("API: Call Certification Microservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(certURL + "/cert/" + shortname).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
@@ -89,7 +89,7 @@ public class CertificationController implements CertApi {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was scuccessfull");
+		logger.info("API: Retrieval was scuccessfull");
 		return ResponseEntity.ok(response);
 	}
 
@@ -98,10 +98,10 @@ public class CertificationController implements CertApi {
 		List<CertificationModel> response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (get Certifications)");
+		logger.info("API: Got Request (get Certifications)");
 
 		try {
-			logger.info("Call Certification Microservice");
+			logger.info("API: Call Certification Microservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(certURL + "/cert").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
@@ -110,7 +110,7 @@ public class CertificationController implements CertApi {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was scuccessfull");
+		logger.info("API: Retrieval was scuccessfull");
 		return ResponseEntity.ok(response);
 	}
 

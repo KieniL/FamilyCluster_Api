@@ -50,12 +50,12 @@ public class AppController implements AppApi, AppOfUserApi {
 			@Valid ApplicationModel applicationModel) {
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Add Applicaiton)");
+		logger.info("API: Got Request (Add Applicaiton)");
 
 		ApplicationModel applicationModelResponse = null;
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			applicationModelResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/app").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -70,25 +70,25 @@ public class AppController implements AppApi, AppOfUserApi {
 		}
 
 		if (applicationModelResponse != null) {
-			logger.info("Adding was succcessfull");
+			logger.info("API: Adding was succcessfull");
 			return ResponseEntity.ok(applicationModelResponse);
 		}
 
-		logger.info("Adding was not succcessfull");
+		logger.info("API: Adding was not succcessfull");
 		return ResponseEntity.badRequest().body(null);
 
 	}
 
 	@Override
 	@Operation(description = "get an application")
-	public ResponseEntity<ApplicationModel> getApp(String JWT, String xRequestID, String SOURCE_IP, String appname) {
+	public ResponseEntity<ApplicationModel> getApp(String appname, String JWT, String xRequestID, String SOURCE_IP) {
 		ApplicationModel response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Get Applicaiton)");
+		logger.info("API: Got Request (Get Applicaiton)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/app/" + appname).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
@@ -98,7 +98,7 @@ public class AppController implements AppApi, AppOfUserApi {
 			logger.error("error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was succcessfull");
+		logger.info("API: Retrieval was succcessfull");
 		return ResponseEntity.ok(response);
 
 	}
@@ -110,10 +110,10 @@ public class AppController implements AppApi, AppOfUserApi {
 		ApplicationModel applicationModelResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Update Applicaiton)");
+		logger.info("API: Got Request (Update Applicaiton)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			applicationModelResponse = webClientBuilder.build().put() // RequestMethod
 					.uri(authURL + "/app").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -128,25 +128,25 @@ public class AppController implements AppApi, AppOfUserApi {
 		}
 
 		if (applicationModelResponse != null) {
-			logger.info("Update was succcessfull");
+			logger.info("API: Update was succcessfull");
 			return ResponseEntity.ok(applicationModelResponse);
 		}
 
-		logger.info("Update was not succcessfull");
+		logger.info("API: Update was not succcessfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
 	@Override
 	@Operation(description = "verify user for an application")
-	public ResponseEntity<VerifiedModel> verifyUserForApp(String JWT, String xRequestID, String SOURCE_IP, String appname,
-			String username) {
+	public ResponseEntity<VerifiedModel> verifyUserForApp(String appname, String username, String JWT, String xRequestID,
+			String SOURCE_IP) {
 		VerifiedModel response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Verify User for an Applicaiton)");
+		logger.info("API: Got Request (Verify User for an Applicaiton)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/app/" + appname + "/" + username).header("JWT", JWT).header("X-Request-ID", xRequestID)
 					.header("SOURCE_IP", SOURCE_IP).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).retrieve() // run
@@ -156,21 +156,21 @@ public class AppController implements AppApi, AppOfUserApi {
 			logger.error("error occured: " + e.getMessage());
 		}
 
-		logger.info("Verification was succcessfull");
+		logger.info("API: Verification was succcessfull");
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
 	@Operation(description = "Add User to an app")
-	public ResponseEntity<UpdatedModel> addUser2App(String JWT, String xRequestID, String SOURCE_IP, String appname,
-			String username) {
+	public ResponseEntity<UpdatedModel> addUser2App(String appname, String username, String JWT, String xRequestID,
+			String SOURCE_IP) {
 		UpdatedModel updatedResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Add User to an Applicaiton)");
+		logger.info("API: Got Request (Add User to an Applicaiton)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			updatedResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/app/" + appname + "/" + username)
 					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
@@ -184,7 +184,7 @@ public class AppController implements AppApi, AppOfUserApi {
 			logger.error("error occured: " + e.getMessage());
 		}
 
-		logger.info("Adding was succcessfull");
+		logger.info("API: Adding was succcessfull");
 		return ResponseEntity.ok(updatedResponse);
 	}
 
@@ -195,10 +195,10 @@ public class AppController implements AppApi, AppOfUserApi {
 		List<ApplicationResponseModel> response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Get Applicaitons)");
+		logger.info("API: Got Request (Get Applicaitons)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/app").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
@@ -207,20 +207,20 @@ public class AppController implements AppApi, AppOfUserApi {
 			logger.error("error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was succcessfull");
+		logger.info("API: Retrieval was succcessfull");
 		return ResponseEntity.ok(response);
 	}
 
 	@Override
-	public ResponseEntity<List<ApplicationModel>> getAppOfUser(String JWT, String xRequestID, String SOURCE_IP,
-			String username) {
+	public ResponseEntity<List<ApplicationModel>> getAppOfUser(String username, String JWT, String xRequestID,
+			String SOURCE_IP) {
 		List<ApplicationModel> response = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (Get Applicaitons of User)");
+		logger.info("API: Got Request (Get Applicaitons of User)");
 
 		try {
-			logger.info("Call Authentication Microservice");
+			logger.info("API: Call Authentication Microservice");
 			response = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/appOfUser/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
@@ -230,7 +230,7 @@ public class AppController implements AppApi, AppOfUserApi {
 			logger.error("error occured: " + e.getMessage());
 		}
 
-		logger.info("Retrieval was succcessfull");
+		logger.info("API: Retrieval was succcessfull");
 		return ResponseEntity.ok(response);
 	}
 

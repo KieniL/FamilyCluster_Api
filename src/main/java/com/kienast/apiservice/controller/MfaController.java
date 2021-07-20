@@ -47,10 +47,10 @@ public class MfaController implements MfaApi {
 		QRCodeModel qrResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (setup MFA)");
+		logger.info("API: Got Request (setup MFA)");
 
 		try {
-			logger.info("Call Auth Microservice");
+			logger.info("API: Call Auth Microservice");
 			qrResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/mfa/setup").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -65,11 +65,11 @@ public class MfaController implements MfaApi {
 		}
 
 		if (qrResponse != null) {
-			logger.info("Setup was successfull");
+			logger.info("API: Setup was successfull");
 			return ResponseEntity.ok(qrResponse);
 		}
 
-		logger.debug("Setup was not successfull");
+		logger.debug("API: Setup was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
@@ -80,10 +80,10 @@ public class MfaController implements MfaApi {
 		VerifiedModel mfaVerificationResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("Got Request (verify MFA)");
+		logger.info("API: Got Request (verify MFA)");
 
 		try {
-			logger.info("Call Auth Microservice");
+			logger.info("API: Call Auth Microservice");
 			mfaVerificationResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/mfa/verify").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
@@ -99,11 +99,11 @@ public class MfaController implements MfaApi {
 		}
 
 		if (mfaVerificationResponse != null) {
-			logger.info("Verification was successfull");
+			logger.info("API: Verification was successfull");
 			return ResponseEntity.ok(mfaVerificationResponse);
 		}
 
-		logger.debug("Verification was not successfull");
+		logger.debug("API: Verification was not successfull");
 		return ResponseEntity.badRequest().body(null);
 	}
 
