@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.kienast.apiservice.config.IntializeLogInfo;
 import com.kienast.apiservice.exception.NotAuthorizedException;
+import com.kienast.apiservice.model.TokenVerificationResponse;
 import com.kienast.apiservice.rest.api.AppApi;
 import com.kienast.apiservice.rest.api.AppOfUserApi;
 import com.kienast.apiservice.rest.api.model.ApplicationModel;
@@ -55,6 +56,26 @@ public class AppController implements AppApi, AppOfUserApi {
 		ApplicationModel applicationModelResponse = null;
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
+		} catch (Exception e) {
+			logger.error("Error on verifiying jwt");
+			throw new NotAuthorizedException(JWT);
+		}
+		
+		try {
 			logger.info("API: Call Authentication Microservice");
 			applicationModelResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/app").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
@@ -82,24 +103,39 @@ public class AppController implements AppApi, AppOfUserApi {
 	@Override
 	@Operation(description = "get an application")
 	public ResponseEntity<ApplicationModel> getApp(String appname, String JWT, String xRequestID, String SOURCE_IP) {
-		ApplicationModel response = null;
+		ApplicationModel applicationResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Get Applicaiton)");
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
 			logger.info("API: Call Authentication Microservice");
-			response = webClientBuilder.build().get() // RequestMethod
+			applicationResponse = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/app/" + appname).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
 					.bodyToMono(ApplicationModel.class) // convert Response
 					.block(); // do as Synchronous call
+
 		} catch (Exception e) {
 			logger.error("error occured: " + e.getMessage());
 		}
 
 		logger.info("API: Retrieval was succcessfull");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(applicationResponse);
 
 	}
 
@@ -111,6 +147,26 @@ public class AppController implements AppApi, AppOfUserApi {
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Update Applicaiton)");
+
+		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
+		} catch (Exception e) {
+			logger.error("Error on verifiying jwt");
+			throw new NotAuthorizedException(JWT);
+		}
 
 		try {
 			logger.info("API: Call Authentication Microservice");
@@ -140,24 +196,39 @@ public class AppController implements AppApi, AppOfUserApi {
 	@Operation(description = "verify user for an application")
 	public ResponseEntity<VerifiedModel> verifyUserForApp(String appname, String username, String JWT, String xRequestID,
 			String SOURCE_IP) {
-		VerifiedModel response = null;
+		VerifiedModel verificationResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Verify User for an Applicaiton)");
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
 			logger.info("API: Call Authentication Microservice");
-			response = webClientBuilder.build().get() // RequestMethod
+			verificationResponse = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/app/" + appname + "/" + username).header("JWT", JWT).header("X-Request-ID", xRequestID)
 					.header("SOURCE_IP", SOURCE_IP).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).retrieve() // run
 					.bodyToMono(VerifiedModel.class) // convert Response
 					.block(); // do as Synchronous call
+
 		} catch (Exception e) {
 			logger.error("error occured: " + e.getMessage());
 		}
 
 		logger.info("API: Verification was succcessfull");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(verificationResponse);
 	}
 
 	@Override
@@ -168,6 +239,26 @@ public class AppController implements AppApi, AppOfUserApi {
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Add User to an Applicaiton)");
+
+		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
+		} catch (Exception e) {
+			logger.error("Error on verifiying jwt");
+			throw new NotAuthorizedException(JWT);
+		}
 
 		try {
 			logger.info("API: Call Authentication Microservice");
@@ -192,46 +283,76 @@ public class AppController implements AppApi, AppOfUserApi {
 	@Operation(description = "get all apps")
 	public ResponseEntity<List<ApplicationResponseModel>> getApplications(String JWT, String xRequestID,
 			String SOURCE_IP) {
-		List<ApplicationResponseModel> response = null;
+		List<ApplicationResponseModel> applicationResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Get Applicaitons)");
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
 			logger.info("API: Call Authentication Microservice");
-			response = webClientBuilder.build().get() // RequestMethod
+			applicationResponse = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/app").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
 					.bodyToFlux(ApplicationResponseModel.class).collectList().block(); // convert Response
+
 		} catch (Exception e) {
 			logger.error("error occured: " + e.getMessage());
 		}
 
 		logger.info("API: Retrieval was succcessfull");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(applicationResponse);
 	}
 
 	@Override
 	public ResponseEntity<List<ApplicationModel>> getAppOfUser(String username, String JWT, String xRequestID,
 			String SOURCE_IP) {
-		List<ApplicationModel> response = null;
+		List<ApplicationModel> applicationResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Get Applicaitons of User)");
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
 			logger.info("API: Call Authentication Microservice");
-			response = webClientBuilder.build().get() // RequestMethod
+			applicationResponse = webClientBuilder.build().get() // RequestMethod
 					.uri(authURL + "/appOfUser/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
 																																																						// command
 					.bodyToFlux(ApplicationModel.class).collectList().block(); // convert Response
+
 		} catch (Exception e) {
 			logger.error("error occured: " + e.getMessage());
 		}
 
 		logger.info("API: Retrieval was succcessfull");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(applicationResponse);
 	}
 
 }

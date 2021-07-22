@@ -63,7 +63,7 @@ public interface AuthApi {
     @RequestMapping(value = "/auth",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<UserModel>> getUsers(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="SOURCX-Real-IPE_IP", required=true) String soURCXRealIPEIP);
+    ResponseEntity<List<UserModel>> getUsers(@ApiParam(value = "" ,required=true) @RequestHeader(value="JWT", required=true) String JWT,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Request-ID", required=true) String xRequestID,@ApiParam(value = "" ,required=true) @RequestHeader(value="X-Real-IP", required=true) String xRealIP);
 
 
     @ApiOperation(value = "Register a customer", nickname = "register", notes = "", response = JWTTokenModel.class, tags={ "auth", })

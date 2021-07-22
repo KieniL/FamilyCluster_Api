@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import com.kienast.apiservice.config.IntializeLogInfo;
 import com.kienast.apiservice.exception.BadRequestException;
+import com.kienast.apiservice.exception.NotAuthorizedException;
+import com.kienast.apiservice.model.TokenVerificationResponse;
 import com.kienast.apiservice.rest.api.AnsparenApi;
 import com.kienast.apiservice.rest.api.model.AnsparEntryModel;
 import com.kienast.apiservice.rest.api.model.CategoryResponseModel;
@@ -38,6 +40,9 @@ public class AnsparController implements AnsparenApi {
 	@Value("${logging.level.com.kienast.apiservice}")
 	private String loglevel;
 
+	@Value("${authURL}")
+	private String authURL;
+
 	private static Logger logger = LogManager.getLogger(AnsparController.class.getName());
 
 	@Override
@@ -48,6 +53,26 @@ public class AnsparController implements AnsparenApi {
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Add Entry)");
+
+		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
+		} catch (Exception e) {
+			logger.error("Error on verifiying jwt");
+			throw new NotAuthorizedException(JWT);
+		}
 
 		try {
 			logger.info("API: Call AnsparMicroservice");
@@ -76,46 +101,77 @@ public class AnsparController implements AnsparenApi {
 	@Override
 	@Operation(description = "get Entries")
 	public ResponseEntity<List<CategoryResponseModel>> getCategories(String JWT, String xRequestID, String SOURCE_IP) {
-		List<CategoryResponseModel> response = null;
+		List<CategoryResponseModel> categoryResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
 		logger.info("API: Got Request (Get Entries)");
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
 			logger.info("API: Call AnsparMicroservice");
-			response = webClientBuilder.build().get() // RequestMethod
+			categoryResponse = webClientBuilder.build().get() // RequestMethod
 					.uri(ansparURL + "/ansparen").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run
 					.bodyToFlux(CategoryResponseModel.class).collectList().block(); // convert Response
+
 		} catch (Exception e) {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
 		logger.info("API: Retrieval was successfull");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(categoryResponse);
 	}
 
 	@Override
 	@Operation(description = "get Entry by categoryName")
-	public ResponseEntity<CategoryResponseModel> getCategory(String description, String JWT, String xRequestID, String SOURCE_IP) {
-		CategoryResponseModel response = null;
+	public ResponseEntity<CategoryResponseModel> getCategory(String description, String JWT, String xRequestID,
+			String SOURCE_IP) {
+		CategoryResponseModel categoryResponse = null;
 
 		IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, "", loglevel);
-		logger.info("API: Got Request (Get Entry) for category " + description );
+		logger.info("API: Got Request (Get Entry) for category " + description);
 
 		try {
+			TokenVerificationResponse tokenResponse = new TokenVerificationResponse();
+
+			logger.info("Call Authentication Microservice for JWT Verification");
+			tokenResponse = webClientBuilder.build().post() // RequestMethod
+					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
+					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.block(); // do as Synchronous call
+
+			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenResponse.getUserId(), loglevel);
+			logger.info("Added userId to log");
+
 			logger.info("API: Call AnsparMicroservice");
-			response = webClientBuilder.build().get() // RequestMethod
+			categoryResponse = webClientBuilder.build().get() // RequestMethod
 					.uri(ansparURL + "/ansparen/" + description)
 					.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
 					.bodyToMono(CategoryResponseModel.class).block();
+
 		} catch (Exception e) {
 			logger.error("Error occured: " + e.getMessage());
 		}
 
 		logger.info("API: Retrieval was successfull");
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(categoryResponse);
 	}
 
 }
