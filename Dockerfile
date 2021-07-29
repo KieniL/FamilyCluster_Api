@@ -8,6 +8,6 @@ ENV API_LOG_LEVEL=DEBUG
 COPY ./target/*.jar /APP/app.jar
 
 
-ENTRYPOINT ["java" ,"-jar app.jar"]
+ENTRYPOINT ["java" ,"-jar", "app.jar"]
 
 EXPOSE 8080
