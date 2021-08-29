@@ -44,6 +44,12 @@ paths:
                 $ref: '#/components/schemas/JWTToken'
         403:
           description: Forbidden
+        400:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationMessage'
     post:
       tags:
       - "auth"
@@ -77,6 +83,12 @@ paths:
                 $ref: '#/components/schemas/Authentication'
         403:
           description: Forbidden
+        400:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationMessage'
     put:
       tags:
       - "auth"
@@ -208,6 +220,12 @@ paths:
                 $ref: '#/components/schemas/Changed'
         403:
           description: Forbidden
+        400:
+          description: Schemas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationMessage'
   /mfa/setup:
     parameters:
     - in: header
@@ -395,3 +413,9 @@ components:
           type: string
           minLength: 1
           maxLength: 40
+    ValidationMessage:
+        required:
+        - messages
+        properties:
+          messages:
+            type: string

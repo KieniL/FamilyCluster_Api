@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import com.kienast.apiservice.config.IntializeLogInfo;
 import com.kienast.apiservice.dto.TokenAdapter;
+import com.kienast.apiservice.exception.BadRequestException;
 import com.kienast.apiservice.exception.NotAuthorizedException;
 import com.kienast.apiservice.model.Token;
 import com.kienast.apiservice.model.TokenVerificationResponse;
@@ -18,9 +19,9 @@ import com.kienast.apiservice.rest.api.model.PasswordModel;
 import com.kienast.apiservice.rest.api.model.ResettedModel;
 import com.kienast.apiservice.rest.api.model.TokenVerifiyResponseModel;
 import com.kienast.apiservice.rest.api.model.UserModel;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -84,9 +85,12 @@ public class AuthController implements AuthApi {
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(loginModel))
 					.retrieve() // run command
-					.onStatus(HttpStatus::is4xxClientError, response -> {
-						return Mono.error(new NotAuthorizedException(String.format("Failed! %s", loginModel.getUsername())));
-					}).bodyToMono(Token.class) // convert Response
+					.onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
+                                                   .flatMap(error -> {
+																										JSONObject json = new JSONObject(error);
+																										 return Mono.error(new BadRequestException(json.getString("messages")));
+																									 })) // throw a functional exception
+					.bodyToMono(Token.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
 			logger.error("Error occured: " + e.getMessage());
@@ -171,9 +175,12 @@ public class AuthController implements AuthApi {
 					.uri(authURL + "/auth").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).body(BodyInserters.fromObject(loginModel))
 					.retrieve() // run command
-					.onStatus(HttpStatus::is4xxClientError, UserModelresponse -> {
-						return Mono.error(new NotAuthorizedException(String.format("Failed! %s", loginModel.getUsername())));
-					}).bodyToMono(AuthenticationModel.class) // convert Response
+					.onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
+                                                   .flatMap(error -> {
+																										JSONObject json = new JSONObject(error);
+																										 return Mono.error(new BadRequestException(json.getString("messages")));
+																									 })) // throw a functional exception
+					.bodyToMono(AuthenticationModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
 			logger.error("Error occured: " + e.getMessage());
@@ -258,9 +265,12 @@ public class AuthController implements AuthApi {
 			tokenVerifyResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
-					.onStatus(HttpStatus::is4xxClientError, response -> {
-						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
-					}).bodyToMono(TokenVerificationResponse.class) // convert Response
+					.onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
+                                                   .flatMap(error -> {
+																										JSONObject json = new JSONObject(error);
+																										 return Mono.error(new BadRequestException(json.getString("messages")));
+																									 })) // throw a functional exception
+					.bodyToMono(TokenVerificationResponse.class) // convert Response
 					.block(); // do as Synchronous call
 
 			IntializeLogInfo.initializeLogInfo(xRequestID, SOURCE_IP, tokenVerifyResponse.getUserId(), loglevel);
@@ -278,7 +288,7 @@ public class AuthController implements AuthApi {
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
 					.body(BodyInserters.fromObject(passwordModel)).retrieve() // run command
 					.onStatus(HttpStatus::is4xxClientError, response -> {
-						return Mono.error(new NotAuthorizedException(String.format("Failed! %s", username)));
+						return Mono.error(new BadRequestException(response.toString()));
 					}).bodyToMono(ChangedModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {

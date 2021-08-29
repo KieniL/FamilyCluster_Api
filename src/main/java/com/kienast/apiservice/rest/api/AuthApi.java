@@ -13,6 +13,7 @@ import com.kienast.apiservice.rest.api.model.PasswordModel;
 import com.kienast.apiservice.rest.api.model.ResettedModel;
 import com.kienast.apiservice.rest.api.model.TokenVerifiyResponseModel;
 import com.kienast.apiservice.rest.api.model.UserModel;
+import com.kienast.apiservice.rest.api.model.ValidationMessageModel;
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -37,7 +38,8 @@ public interface AuthApi {
     @ApiOperation(value = "Authenticate a customer", nickname = "authenticate", notes = "", response = AuthenticationModel.class, tags={ "auth", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Schemas", response = AuthenticationModel.class),
-        @ApiResponse(code = 403, message = "Forbidden") })
+        @ApiResponse(code = 403, message = "Forbidden"),
+        @ApiResponse(code = 400, message = "Schemas", response = ValidationMessageModel.class) })
     @RequestMapping(value = "/auth",
         produces = { "application/json" }, 
         consumes = { "application/json" },
@@ -48,7 +50,8 @@ public interface AuthApi {
     @ApiOperation(value = "Change the User Password", nickname = "changePassword", notes = "", response = ChangedModel.class, tags={ "auth", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Schemas", response = ChangedModel.class),
-        @ApiResponse(code = 403, message = "Forbidden") })
+        @ApiResponse(code = 403, message = "Forbidden"),
+        @ApiResponse(code = 400, message = "Schemas", response = ValidationMessageModel.class) })
     @RequestMapping(value = "/auth/{username}",
         produces = { "application/json" }, 
         consumes = { "application/json" },
@@ -69,7 +72,8 @@ public interface AuthApi {
     @ApiOperation(value = "Register a customer", nickname = "register", notes = "", response = JWTTokenModel.class, tags={ "auth", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Schemas", response = JWTTokenModel.class),
-        @ApiResponse(code = 403, message = "Forbidden") })
+        @ApiResponse(code = 403, message = "Forbidden"),
+        @ApiResponse(code = 400, message = "Schemas", response = ValidationMessageModel.class) })
     @RequestMapping(value = "/auth",
         produces = { "application/json" }, 
         consumes = { "application/json" },
