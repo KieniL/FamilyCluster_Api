@@ -265,11 +265,9 @@ public class AuthController implements AuthApi {
 			tokenVerifyResponse = webClientBuilder.build().post() // RequestMethod
 					.uri(authURL + "/jwt").header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE).header("JWT", JWT)
 					.header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP).retrieve() // run command
-					.onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
-                                                   .flatMap(error -> {
-																										JSONObject json = new JSONObject(error);
-																										 return Mono.error(new BadRequestException(json.getString("messages")));
-																									 })) // throw a functional exception
+					.onStatus(HttpStatus::is4xxClientError, response -> {
+						return Mono.error(new NotAuthorizedException(String.format("Failed JWT Verification")));
+					})
 					.bodyToMono(TokenVerificationResponse.class) // convert Response
 					.block(); // do as Synchronous call
 
@@ -287,9 +285,12 @@ public class AuthController implements AuthApi {
 					.uri(authURL + "/auth/" + username).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
 					.header("JWT", JWT).header("X-Request-ID", xRequestID).header("SOURCE_IP", SOURCE_IP)
 					.body(BodyInserters.fromObject(passwordModel)).retrieve() // run command
-					.onStatus(HttpStatus::is4xxClientError, response -> {
-						return Mono.error(new BadRequestException(response.toString()));
-					}).bodyToMono(ChangedModel.class) // convert Response
+					.onStatus(HttpStatus::isError, response -> response.bodyToMono(String.class) // error body as String or other class
+                                                   .flatMap(error -> {
+																										JSONObject json = new JSONObject(error);
+																										 return Mono.error(new BadRequestException(json.getString("messages")));
+																									 })) // throw a functional exception
+					.bodyToMono(ChangedModel.class) // convert Response
 					.block(); // do as Synchronous call
 		} catch (Exception e) {
 			logger.error("Error occured: " + e.getMessage());
